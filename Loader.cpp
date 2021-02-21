@@ -5,12 +5,14 @@
 
 using namespace std;
 
-Loader::Loader(){
+Loader::Loader(const char* jarPath, const char* mainMethod){
+	this->jarPath = jarPath;
+	this->mainMethod = mainMethod;
 	Init();
 }
 
 void Loader::Init() {
-	jvmMod = LoadLibraryA((getExeDir() + string("\\bin\\server\\jvm.dll")).c_str());
+	jvmMod = LoadLibraryA((GetExeDir() + string("\\bin\\server\\jvm.dll")).c_str());
 
 	if (jvmMod == nullptr) { 
 		cout << "Error: " << "jvm.dll could not be loaded" << endl;
@@ -22,7 +24,7 @@ void Loader::Init() {
 	JavaVMInitArgs vmArgs;
 	JavaVMOption* vmOptions = new JavaVMOption[1];
 
-	string optClassPath(string("-Djava.class.path=") + getExeDir() + string("\\JVM_TEST.jar"));
+	string optClassPath(string("-Djava.class.path=") + string(jarPath));
 
 	vmOptions[0].optionString = (char*)optClassPath.c_str();
 	vmArgs.version = JNI_VERSION_1_8;
@@ -43,7 +45,7 @@ void Loader::Run() {
 }
 
 void Loader::Run(const char* args[], int size) {
-	jclass mainClass = env->FindClass("pl/afyaan/Main");
+	jclass mainClass = env->FindClass(mainMethod);
 
 	if (mainClass == nullptr) {
 		cout << "Error: " << "Main class not found" << endl;

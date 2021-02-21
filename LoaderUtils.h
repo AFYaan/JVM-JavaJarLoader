@@ -5,6 +5,6 @@
 
 using namespace std;
 
-string getExeDir();
+string GetExeDir();
 
 jobjectArray charArrayToJavaArray(JNIEnv* env, const char* data[], int size);

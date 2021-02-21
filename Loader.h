@@ -5,13 +5,16 @@
 class Loader
 {
 private:
+	const char* jarPath;
+	const char* mainMethod;
+
 	HMODULE jvmMod;
 
 	JavaVM* jvm;
 	JNIEnv* env;
 
 public:
-	Loader();
+	Loader(const char* jarPath, const char* mainMethod);
 
 public:
 	void Run();

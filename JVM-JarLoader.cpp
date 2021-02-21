@@ -1,15 +1,10 @@
-﻿#include <iostream>
-#include <windows.h>
-
+﻿#include "Loader.h"
 #include "LoaderUtils.h"
-
-#include "Loader.h"
-
-
-using namespace std;
 
 int main(int argsLength, const char* args[])
 {
-    Loader* loader = new Loader();
+    string jarPath = GetExeDir() + string("\\JVM_TEST.jar");
+    string mainMethod("pl/afyaan/Main");
+    Loader* loader = new Loader(jarPath.c_str(), mainMethod.c_str());
     loader->Run(args, argsLength);
 }

@@ -1,7 +1,7 @@
 #include "LoaderUtils.h"
 #include <iostream>
 
-string getExeDir() {
+string GetExeDir() {
     char result[MAX_PATH];
     string dir = string(result, GetModuleFileNameA(NULL, result, MAX_PATH));
     size_t last = dir.find_last_of("\\");
