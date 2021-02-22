@@ -32,7 +32,7 @@ int main(int argsLength, const char* args[])
 }
 ```
 
-## Usage 2
+## Usage 3
 
 ```cplusplus
 #include "Loader.h"
