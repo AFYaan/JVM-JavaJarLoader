@@ -3,9 +3,17 @@
 #include "LoaderUtils.h"
 #include <iostream>
 
+#include "ClassLoader.h"
+
 using namespace std;
 
-Loader::Loader(const char* jarPath, const char* mainMethod){
+Loader::Loader(const char* mainMethod) {
+	this->jarPath = GetExeDir().c_str();
+	this->mainMethod = mainMethod;
+	Init();
+}
+
+Loader::Loader(const char* jarPath, const char* mainMethod) {
 	this->jarPath = jarPath;
 	this->mainMethod = mainMethod;
 	Init();
@@ -14,9 +22,9 @@ Loader::Loader(const char* jarPath, const char* mainMethod){
 void Loader::Init() {
 	jvmMod = LoadLibraryA((GetExeDir() + string("\\bin\\server\\jvm.dll")).c_str());
 
-	if (jvmMod == nullptr) { 
+	if (jvmMod == nullptr) {
 		cout << "Error: " << "jvm.dll could not be loaded" << endl;
-		exit(EXIT_FAILURE); 
+		exit(EXIT_FAILURE);
 	}
 
 	typedef jint(JNICALL* PtrCreateJavaVM)(JavaVM**, void**, void*);
@@ -34,9 +42,9 @@ void Loader::Init() {
 
 	jint vm = ptrCreateJavaVM(&jvm, (void**)&env, &vmArgs);
 
-	if (vm != JNI_OK) { 
+	if (vm != JNI_OK) {
 		cout << "Error: " << "Can't create java vm " << endl;
-		exit(EXIT_FAILURE); 
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -59,6 +67,27 @@ void Loader::Run(const char* args[], int size) {
 		exit(EXIT_FAILURE);
 	}
 
-	env->CallStaticVoidMethod(mainClass, mainMethod, charArrayToJavaArray(env, args, size));
+	env->CallStaticVoidMethod(mainClass, mainMethod, charArrayToJavaStringArray(env, args, size));
+
 	jvm->DestroyJavaVM();
+}
+
+void Loader::RunFromMemory(const unsigned char data[], int dataSize) {
+	RunFromMemory(data, dataSize, NULL, 0);
+}
+
+void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char* args[], int argsLength) {
+	jclass byteArrayinputStream = env->FindClass("java/io/ByteArrayInputStream");
+	jmethodID byteArrayinputStreamConstructor = env->GetMethodID(byteArrayinputStream, "<init>", "([B)V");
+	jobject stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, charArrayToJavaByteArray(env, data, dataSize));
+
+	ClassLoader* classLoader = new ClassLoader(env, stream);
+	classLoader->loadClass(env->NewStringUTF(replaceAll(mainMethod, "/", ".").c_str()));
+
+	jobjectArray argss = charArrayToJavaStringArray(env, args, argsLength);
+
+	jclass mainClass = env->FindClass(mainMethod);
+	jmethodID mainMethod = env->GetStaticMethodID(mainClass, "main", "([Ljava/lang/String;)V");
+
+	env->CallStaticVoidMethod(mainClass, mainMethod, argss);
 }

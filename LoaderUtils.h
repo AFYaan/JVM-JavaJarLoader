@@ -7,4 +7,8 @@ using namespace std;
 
 string GetExeDir();
 
-jobjectArray charArrayToJavaArray(JNIEnv* env, const char* data[], int size);
+jobjectArray charArrayToJavaStringArray(JNIEnv* env, const char* data[], int size);
+
+jbyteArray charArrayToJavaByteArray(JNIEnv* env, const unsigned char data[], int len);
+
+string replaceAll(string str, const string& from, const string& to);

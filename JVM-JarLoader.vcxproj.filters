@@ -16,6 +16,9 @@
     <Filter Include="Loader">
       <UniqueIdentifier>{debd677f-3d51-4dd5-b056-2dfdb0eaa3f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ClassLoader">
+      <UniqueIdentifier>{6729979f-9978-45ed-9741-944a79b4ca17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JVM-JarLoader.cpp">
@@ -27,6 +30,9 @@
     <ClCompile Include="Loader.cpp">
       <Filter>Loader</Filter>
     </ClCompile>
+    <ClCompile Include="ClassLoader.cpp">
+      <Filter>ClassLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoaderUtils.h">
@@ -34,6 +40,12 @@
     </ClInclude>
     <ClInclude Include="Loader.h">
       <Filter>Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassLoader.h">
+      <Filter>ClassLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>Pliki źródłowe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
