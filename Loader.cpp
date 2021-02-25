@@ -8,7 +8,7 @@
 using namespace std;
 
 Loader::Loader(const char* mainMethod) {
-	string exePath = GetExeDir() + string("\\") + GetCurrentExeName();
+	string exePath = GetCurrentExeName();
 	this->jarPath = exePath.c_str();
 	this->mainMethod = mainMethod;
 	Init();
