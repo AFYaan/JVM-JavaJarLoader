@@ -70,6 +70,8 @@ const unsigned char rawData[1863] = {
 int main()
 {
     string mainMethod("pl/afyaan/Main");
+    
+    //Resource file is a current exe
     Loader* loader = new Loader(mainMethod.c_str());
     loader->RunFromMemory(rawData, sizeof(rawData));
 }
@@ -90,7 +92,32 @@ const unsigned char rawData[1863] = {
 int main(int argsLength, const char* args[])
 {
     string mainMethod("pl/afyaan/Main");
+    
+    //Resource file is a current exe
     Loader* loader = new Loader(mainMethod.c_str());
+    loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
+}
+```
+
+## Usage 6
+
+```cplusplus
+#include "Loader.h"
+#include "LoaderUtils.h"
+
+const unsigned char rawData[1863] = {
+	0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x08, 0x08, 0x08, 0x00, 0x6C, 0x2F,
+	0x57, 0x52, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x14, 0x00, 0x04, 0x00, 0x4D, 0x45, 0x54, ...
+};
+
+int main(int argsLength, const char* args[])
+{
+    //Resources file (.jar, .exe, .zip)
+    string resPath = GetExeDir() + string("\\JVM_TEST.jar");
+
+    string mainMethod("pl/afyaan/Main");
+    Loader* loader = new Loader(resPath.c_str(), mainMethod.c_str());
     loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
 }
 ```
