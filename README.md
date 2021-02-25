@@ -1,8 +1,8 @@
 # JVM Java Jar Loader
 
-# Run from file usages
+## Run from file usages
 
-## Usage 1
+### Usage 1
 
 ```cplusplus
 #include "Loader.h"
@@ -18,7 +18,7 @@ int main()
 }
 ```
 
-## Usage 2
+### Usage 2
 
 ```cplusplus
 #include "Loader.h"
@@ -34,7 +34,7 @@ int main(int argsLength, const char* args[])
 }
 ```
 
-## Usage 3
+### Usage 3
 
 ```cplusplus
 #include "Loader.h"
@@ -53,9 +53,9 @@ int main()
 }
 ```
 
-# Run from memory usages
+## Run from memory usages
 
-## Usage 4
+### Usage 4
 
 ```cplusplus
 #include "Loader.h"
@@ -77,7 +77,7 @@ int main()
 }
 ```
 
-## Usage 5
+### Usage 5
 
 ```cplusplus
 #include "Loader.h"
@@ -99,7 +99,7 @@ int main(int argsLength, const char* args[])
 }
 ```
 
-## Usage 6
+### Usage 6
 
 ```cplusplus
 #include "Loader.h"
