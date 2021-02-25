@@ -1,5 +1,4 @@
 #include "LoaderUtils.h"
-#include <iostream>
 
 string GetExeDir() {
     char result[MAX_PATH];
@@ -9,7 +8,13 @@ string GetExeDir() {
     return dir.substr(0, last);
 }
 
-jobjectArray charArrayToJavaStringArray(JNIEnv* env, const char* data[], int size) {
+string GetCurrentExeName() {
+    char name[MAX_PATH];
+    GetModuleFileNameA(nullptr, name, MAX_PATH);
+    return name;
+}
+
+jobjectArray CharArrayToJavaStringArray(JNIEnv* env, const char* data[], int size) {
     jobjectArray array = env->NewObjectArray(size, env->FindClass("java/lang/String"), env->NewStringUTF(""));
 
     for (int i = 0; i < size; i++) env->SetObjectArrayElement(array, i, env->NewStringUTF(data[i]));
@@ -17,22 +22,13 @@ jobjectArray charArrayToJavaStringArray(JNIEnv* env, const char* data[], int siz
     return array;
 }
 
-jbyteArray charArrayToJavaByteArray(JNIEnv* env, const unsigned char data[], int len) {
+jbyteArray CharArrayToJavaByteArray(JNIEnv* env, const unsigned char data[], int len) {
     jbyteArray array = env->NewByteArray(len);
-    jbyte* a = new jbyte[len];
+    jbyte* bytes = new jbyte[len];
 
-    for (int i = 0; i < len; i++) a[i] = (jbyte)((unsigned char)data[i]);
+    for (int i = 0; i < len; i++) bytes[i] = (jbyte)((unsigned char)data[i]);
 
-    env->SetByteArrayRegion(array, 0, len, a);
+    env->SetByteArrayRegion(array, 0, len, bytes);
 
     return array;
-}
-
-string replaceAll(string str, const string& from, const string& to) {
-    size_t start_pos = 0;
-    while ((start_pos = str.find(from, start_pos)) != string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length();
-    }
-    return str;
 }

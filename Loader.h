@@ -21,8 +21,9 @@ public:
 public:
 	void Run();
 	void Run(const char* args[], int size);
-	void RunFromMemory(const unsigned char data[], int size);
-	void RunFromMemory(const unsigned char data[], int dataSize, const char* args[], int argsLength);
+	void RunFromMemory(const unsigned char data[], int dataSize, bool autoDestroy = true);
+	void RunFromMemory(const unsigned char data[], int dataSize, const char* args[], int argsLength, bool autoDestroy = true);
+	void DestroyVM();
 
 private:
 	void Init();

@@ -5,24 +5,21 @@ using namespace std;
 
 ClassLoader::ClassLoader(JNIEnv* env, jobject stream) {
 	this->env = env;
-	jclass Class = env->FindClass("java/lang/Class");
-	jmethodID getClassLoader = env->GetMethodID(Class, "getClassLoader", "()Ljava/lang/ClassLoader;");
+	this->stream = stream;
+	this->classes = nullptr;
+	this->classLoader = nullptr;
+}
 
-	jclass mainClass = env->FindClass("pl/afyaan/Main");
-	jobject mainClassLoader = env->CallObjectMethod(mainClass, getClassLoader);
-
+void ClassLoader::load() {
 	jclass hashMap = env->FindClass("java/util/HashMap");
 	jmethodID hashMapConstructor = env->GetMethodID(hashMap, "<init>", "()V");
 	classes = env->NewObject(hashMap, hashMapConstructor);
 	jmethodID put = env->GetMethodID(hashMap, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-	jmethodID get = env->GetMethodID(hashMap, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
 
 	jclass classLoaderClass = env->FindClass("java/lang/ClassLoader");
-	jclass classLoaderClassSuper = env->GetSuperclass(env->FindClass("java/lang/ClassLoader"));
-	jmethodID classLoaderConstructor = env->GetMethodID(classLoaderClass, "<init>", "(Ljava/lang/ClassLoader;)V");
 	jmethodID getSystemClassLoader = env->GetStaticMethodID(classLoaderClass, "getSystemClassLoader", "()Ljava/lang/ClassLoader;");
 
-	classLoader = env->NewGlobalRef(env->CallStaticObjectMethod(classLoaderClass, getSystemClassLoader));
+	classLoader = env->CallStaticObjectMethod(classLoaderClass, getSystemClassLoader);
 
 	jclass jarInputStream = env->FindClass("java/util/jar/JarInputStream");
 	jmethodID jarInputStreamConstructor = env->GetMethodID(jarInputStream, "<init>", "(Ljava/io/InputStream;)V");
@@ -53,12 +50,13 @@ ClassLoader::ClassLoader(JNIEnv* env, jobject stream) {
 
 		if (name) {
 			jbyteArray classBytes = readClass(jis);
-
 			jstring cononicalName = (jstring)env->CallObjectMethod(
 				env->CallObjectMethod(entryName, replaceAll, env->NewStringUTF("/"), env->NewStringUTF(".")), replaceAll,
 				env->NewStringUTF(".class"), env->NewStringUTF(""));
 
-			jobject test = env->CallObjectMethod(classes, put, cononicalName, classBytes);
+			env->CallObjectMethod(classes, put, cononicalName, classBytes);
+
+			loadClass(cononicalName);
 		}
 	}
 

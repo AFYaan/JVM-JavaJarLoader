@@ -7,12 +7,13 @@ private:
 	JNIEnv* env;
 	jobject classes;
 	jobject classLoader;
+	jobject stream;
 
 public:
 	ClassLoader(JNIEnv* env, jobject stream);
-	jobject loadClass(jstring name);
+	void load();
 
 private:
 	jbyteArray readClass(jobject stream);
+	jobject loadClass(jstring name);
 };
-
