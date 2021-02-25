@@ -1,4 +1,7 @@
 # JVM Java Jar Loader
+JavaJarLoader runs a jar file contained in a byte array or in a file.
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/27700785ed774aad99d559135d793175)](https://www.codacy.com/gh/AFYaan/JVM-JavaJarLoader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AFYaan/JVM-JavaJarLoader&amp;utm_campaign=Badge_Grade)
 
 ## Run from file usages
 
