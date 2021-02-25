@@ -1,5 +1,7 @@
 # JVM Java Jar Loader
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e0dd27cbdfc74d34a2a011802a734be6)](https://app.codacy.com/gh/AFYaan/JVM-JavaJarLoader?utm_source=github.com&utm_medium=referral&utm_content=AFYaan/JVM-JavaJarLoader&utm_campaign=Badge_Grade_Settings)
+
 ## Run from file usages
 
 ### Usage 1
