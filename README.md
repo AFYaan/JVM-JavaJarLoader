@@ -16,7 +16,7 @@ int main()
     string jarPath = GetExeDir() + string("\\JVM_TEST.jar");
     string mainMethod("pl/afyaan/Main");
 
-    Loader* loader = new Loader(jarPath.c_str(), mainMethod.c_str());
+    Loader* loader = new Loader(jarPath, mainMethod);
     loader->Run();
 }
 ```
@@ -32,7 +32,7 @@ int main(int argsLength, const char* args[])
     string jarPath = GetExeDir() + string("\\JVM_TEST.jar");
     string mainMethod("pl/afyaan/Main");
 
-    Loader* loader = new Loader(jarPath.c_str(), mainMethod.c_str());
+    Loader* loader = new Loader(jarPath, mainMethod);
     loader->Run(args, argsLength);
 }
 ```
@@ -51,7 +51,7 @@ int main()
     string jarPath = GetExeDir() + string("\\JVM_TEST.jar");
     string mainMethod("pl/afyaan/Main");
 
-    Loader* loader = new Loader(jarPath.c_str(), mainMethod.c_str());
+    Loader* loader = new Loader(jarPath, mainMethod);
     loader->Run(args, argsLength);
 }
 ```
@@ -75,7 +75,7 @@ int main()
     string mainMethod("pl/afyaan/Main");
     
     //Resource file is a current exe
-    Loader* loader = new Loader(mainMethod.c_str());
+    Loader* loader = new Loader(mainMethod);
     loader->RunFromMemory(rawData, sizeof(rawData));
 }
 ```
@@ -97,7 +97,7 @@ int main(int argsLength, const char* args[])
     string mainMethod("pl/afyaan/Main");
     
     //Resource file is a current exe
-    Loader* loader = new Loader(mainMethod.c_str());
+    Loader* loader = new Loader(mainMethod);
     loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
 }
 ```
@@ -120,7 +120,7 @@ int main(int argsLength, const char* args[])
     string resPath = GetExeDir() + string("\\JVM_TEST.jar");
 
     string mainMethod("pl/afyaan/Main");
-    Loader* loader = new Loader(resPath.c_str(), mainMethod.c_str());
+    Loader* loader = new Loader(resPath, mainMethod);
     loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
 }
 ```
