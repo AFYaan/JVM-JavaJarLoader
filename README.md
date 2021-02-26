@@ -1,8 +1,11 @@
 # JVM Java Jar Loader
+JavaJarLoader runs a jar file contained in a byte array or in a file.
 
-# Run from file usages
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/27700785ed774aad99d559135d793175)](https://github.com/AFYaan/JVM-JavaJarLoader)
 
-## Usage 1
+## Run from file usages
+
+### Usage 1
 
 ```cplusplus
 #include "Loader.h"
@@ -18,7 +21,7 @@ int main()
 }
 ```
 
-## Usage 2
+### Usage 2
 
 ```cplusplus
 #include "Loader.h"
@@ -34,7 +37,7 @@ int main(int argsLength, const char* args[])
 }
 ```
 
-## Usage 3
+### Usage 3
 
 ```cplusplus
 #include "Loader.h"
@@ -53,9 +56,9 @@ int main()
 }
 ```
 
-# Run from memory usages
+## Run from memory usages
 
-## Usage 4
+### Usage 4
 
 ```cplusplus
 #include "Loader.h"
@@ -77,7 +80,7 @@ int main()
 }
 ```
 
-## Usage 5
+### Usage 5
 
 ```cplusplus
 #include "Loader.h"
@@ -99,7 +102,7 @@ int main(int argsLength, const char* args[])
 }
 ```
 
-## Usage 6
+### Usage 6
 
 ```cplusplus
 #include "Loader.h"
