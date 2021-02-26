@@ -8,6 +8,7 @@ int main(int argsLength, const char* args[])
     string resPath = GetExeDir() + string("\\JVM_TEST.jar");
 
     string mainMethod("pl/afyaan/Main");
-    Loader* loader = new Loader(resPath.c_str(), mainMethod.c_str());
+    Loader* loader = new Loader(mainMethod);
+
     loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
 }

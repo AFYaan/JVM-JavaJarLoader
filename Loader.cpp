@@ -7,20 +7,20 @@
 
 using namespace std;
 
-Loader::Loader(const char* mainMethod) {
-	string exePath = GetCurrentExeName();
-	this->jarPath = exePath.c_str();
-	this->mainMethod = mainMethod;
-	Init();
+Loader::Loader(string mainClass) {
+	string exePath(GetCurrentExeName().c_str());
+	this->Loader::Loader(GetCurrentExeName(), mainClass);
 }
 
-Loader::Loader(const char* jarPath, const char* mainMethod) {
+Loader::Loader(string jarPath, string mainClass) {
 	this->jarPath = jarPath;
-	this->mainMethod = mainMethod;
-	Init();
+	this->mainClassPath = mainClass;
+	this->isInit = false;
 }
 
 void Loader::Init() {
+	if (isInit) return;
+
 	jvmMod = LoadLibraryA((GetExeDir() + string("\\bin\\server\\jvm.dll")).c_str());
 
 	if (jvmMod == nullptr) {
@@ -32,13 +32,20 @@ void Loader::Init() {
 	PtrCreateJavaVM ptrCreateJavaVM = (PtrCreateJavaVM)GetProcAddress(jvmMod, "JNI_CreateJavaVM");
 
 	JavaVMInitArgs vmArgs;
-	JavaVMOption* vmOptions = new JavaVMOption[1];
+	JavaVMOption* vmOptions = new JavaVMOption[32];
 
-	string optClassPath(string("-Djava.class.path=") + string(jarPath));
+	string optClassPath = string("-Djava.class.path=") + this->jarPath;
+	
+	int argLength = 0;
+	vmOptions[argLength].optionString = (char*)optClassPath.c_str();
+	
+	for (const char* arg : jvmArgList) {
+		argLength++;
+		vmOptions[argLength].optionString = (char*)arg;
+	}
 
-	vmOptions[0].optionString = (char*)optClassPath.c_str();
 	vmArgs.version = JNI_VERSION_1_8;
-	vmArgs.nOptions = 1;
+	vmArgs.nOptions = argLength + 1;
 	vmArgs.options = vmOptions;
 	vmArgs.ignoreUnrecognized = JNI_FALSE;
 
@@ -48,14 +55,18 @@ void Loader::Init() {
 		cout << "Error: " << "Can't create java vm" << endl;
 		exit(EXIT_FAILURE);
 	}
+
+	isInit = true;
 }
 
 void Loader::Run() {
 	Run(NULL, 0);
 }
 
-void Loader::Run(const char* args[], int size) {
-	jclass mainClass = env->FindClass(mainMethod);
+void Loader::Run(const char* args[], int argsLength) {
+	Init();
+
+	jclass mainClass = env->FindClass(mainClassPath.c_str());
 
 	if (mainClass == nullptr) {
 		cout << "Error: " << "Main class not found" << endl;
@@ -69,7 +80,24 @@ void Loader::Run(const char* args[], int size) {
 		exit(EXIT_FAILURE);
 	}
 
-	env->CallStaticVoidMethod(mainClass, mainMethod, CharArrayToJavaStringArray(env, args, size));
+	const char* newArgs[1024];
+	int newLength = 0;
+
+	for (int i = 0; i < argsLength; i++) {
+		newArgs[i] = args[i];
+		newLength++;
+	}
+
+	for (const char* arg : appArgs) {
+		newArgs[newLength] = arg;
+		newLength++;
+	}
+
+	for (int i = 0; i < newLength; i++) {
+		cout << "Arg: " << newArgs[i] << endl;
+	}
+
+	env->CallStaticVoidMethod(mainClass, mainMethod, CharArrayToJavaStringArray(env, newArgs, newLength));
 }
 
 void Loader::RunFromMemory(const unsigned char data[], int dataSize, bool autoDestroy) {
@@ -77,6 +105,8 @@ void Loader::RunFromMemory(const unsigned char data[], int dataSize, bool autoDe
 }
 
 void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char* args[], int argsLength, bool autoDestroy) {
+	Init();
+
 	jclass byteArrayinputStream = env->FindClass("java/io/ByteArrayInputStream");
 	jmethodID byteArrayinputStreamConstructor = env->GetMethodID(byteArrayinputStream, "<init>", "([B)V");
 	jobject stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, CharArrayToJavaByteArray(env, data, dataSize));
@@ -84,9 +114,23 @@ void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char*
 	ClassLoader* classLoader = new ClassLoader(env, stream);
 	classLoader->load();
 
-	jclass mainClass = env->FindClass(mainMethod);
+	jclass mainClass = env->FindClass(mainClassPath.c_str());
 	jmethodID mainMethod = env->GetStaticMethodID(mainClass, "main", "([Ljava/lang/String;)V");
-	jobjectArray argss = CharArrayToJavaStringArray(env, args, argsLength);
+
+	const char* newArgs[1024];
+	int newLength = 0;
+
+	for (int i = 0; i < argsLength; i++) {
+		newArgs[i] = args[i];
+		newLength++;
+	}
+
+	for (const char* arg : appArgs) {
+		newArgs[newLength] = arg;
+		newLength++;
+	}
+
+	jobjectArray argss = CharArrayToJavaStringArray(env, newArgs, newLength);
 
 	env->CallStaticVoidMethod(mainClass, mainMethod, argss);
 
@@ -95,4 +139,19 @@ void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char*
 
 void Loader::DestroyVM() {
 	jvm->DestroyJavaVM();
+}
+
+void Loader::SetJVMArgs(const char* args[], int size) {
+	jvmArgList.clear();
+	for (int i = 0; i < size; i++) {
+		jvmArgList.push_back(args[i]);
+	}
+}
+
+void Loader::AddJVMArg(const char* arg) {
+	jvmArgList.push_back(arg);
+}
+
+void Loader::AddArg(const char* arg) {
+	appArgs.push_back(arg);
 }
