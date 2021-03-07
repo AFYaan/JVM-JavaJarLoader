@@ -96,7 +96,7 @@ void Loader::Run(const char* args[], int argsLength) {
 	for (int i = 0; i < newLength; i++) {
 		cout << "Arg: " << newArgs[i] << endl;
 	}
-
+	
 	env->CallStaticVoidMethod(mainClass, mainMethod, CharArrayToJavaStringArray(env, newArgs, newLength));
 }
 
@@ -111,7 +111,7 @@ void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char*
 	jmethodID byteArrayinputStreamConstructor = env->GetMethodID(byteArrayinputStream, "<init>", "([B)V");
 	jobject stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, CharArrayToJavaByteArray(env, data, dataSize));
 
-	ClassLoader* classLoader = new ClassLoader(env, stream);
+	unique_ptr<ClassLoader> classLoader(new ClassLoader(env, stream));
 	classLoader->load();
 
 	jclass mainClass = env->FindClass(mainClassPath.c_str());
