@@ -11,8 +11,8 @@ class Loader
 {
 private:
 	string jarPath;
-
 	string mainClassPath;
+	string password;
 
 	HMODULE jvmMod;
 
@@ -37,6 +37,7 @@ public:
 	void SetJVMArgs(const char* args[], int size);
 	void AddJVMArg(const char* arg);
 	void AddArg(const char* arg);
+	void SetPassword(string key);
 
 private:
 	void Init();

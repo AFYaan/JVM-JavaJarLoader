@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClassLoader.cpp" />
+    <ClCompile Include="Decryptor.cpp" />
     <ClCompile Include="JVM-JarLoader.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoaderUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassLoader.h" />
+    <ClInclude Include="Decryptor.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoaderUtils.h" />
     <ClInclude Include="Resources.h" />

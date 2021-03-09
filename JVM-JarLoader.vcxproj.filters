@@ -19,6 +19,9 @@
     <Filter Include="ClassLoader">
       <UniqueIdentifier>{6729979f-9978-45ed-9741-944a79b4ca17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Decryptor">
+      <UniqueIdentifier>{7126b352-0281-4951-9584-13b1484b6ba6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JVM-JarLoader.cpp">
@@ -33,6 +36,9 @@
     <ClCompile Include="ClassLoader.cpp">
       <Filter>ClassLoader</Filter>
     </ClCompile>
+    <ClCompile Include="Decryptor.cpp">
+      <Filter>Decryptor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoaderUtils.h">
@@ -46,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="Resources.h">
       <Filter>Pliki źródłowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Decryptor.h">
+      <Filter>Decryptor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

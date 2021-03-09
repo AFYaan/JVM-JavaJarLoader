@@ -3,6 +3,8 @@
 #include "LoaderUtils.h"
 #include <iostream>
 
+#include "Decryptor.h"
+
 #include "ClassLoader.h"
 
 using namespace std;
@@ -59,6 +61,10 @@ void Loader::Init() {
 	isInit = true;
 }
 
+void Loader::SetPassword(string password) {
+	this->password = password;
+}
+
 void Loader::Run() {
 	Run(NULL, 0);
 }
@@ -109,9 +115,20 @@ void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char*
 
 	jclass byteArrayinputStream = env->FindClass("java/io/ByteArrayInputStream");
 	jmethodID byteArrayinputStreamConstructor = env->GetMethodID(byteArrayinputStream, "<init>", "([B)V");
-	jobject stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, CharArrayToJavaByteArray(env, data, dataSize));
+	jobject stream = nullptr;
+	if (!this->password.empty()) {
+		unique_ptr<Decryptor> decryptor(new Decryptor(env, password.c_str()));
+		jobject decryptedData = decryptor->Decrypt(CharArrayToJavaByteArray(env, data, dataSize));
 
-	unique_ptr<ClassLoader> classLoader(new ClassLoader(env, stream));
+		cout << password.c_str() << endl;
+
+		stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, decryptedData);
+	}
+	else {
+		stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, CharArrayToJavaByteArray(env, data, dataSize));
+	}
+
+	unique_ptr<ClassLoader> classLoader(new ClassLoader(env, stream, password));
 	classLoader->load();
 
 	jclass mainClass = env->FindClass(mainClassPath.c_str());

@@ -1,13 +1,15 @@
 #include "ClassLoader.h"
 #include <iostream>
+#include "Decryptor.h"
 
 using namespace std;
 
-ClassLoader::ClassLoader(JNIEnv* env, jobject stream) {
+ClassLoader::ClassLoader(JNIEnv* env, jobject stream, string password) {
 	this->env = env;
 	this->stream = stream;
 	this->classes = nullptr;
 	this->classLoader = nullptr;
+	this->password = password;
 }
 
 void ClassLoader::load() {
@@ -45,7 +47,6 @@ void ClassLoader::load() {
 
 	while ((je = env->CallObjectMethod(jis, getNextJarEntry)) != NULL) {
 		entryName = (jstring)env->CallObjectMethod(je, getName);
-
 		jboolean name = env->CallBooleanMethod(env->CallObjectMethod(je, getName), endsWith, env->NewStringUTF(".class"));
 
 		if (name) {
@@ -82,9 +83,11 @@ jbyteArray ClassLoader::readClass(jobject stream) {
 		env->CallVoidMethod(baos, write, qwe);
 	}
 
-	jbyteArray test = (jbyteArray)env->CallObjectMethod(baos, toByteArray);
+	jbyteArray classBytes = (jbyteArray)env->CallObjectMethod(baos, toByteArray);
 
-	return test;
+	
+	return classBytes;
+	
 }
 
 jobject ClassLoader::loadClass(jstring name) {
