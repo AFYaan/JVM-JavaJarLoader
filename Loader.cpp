@@ -9,15 +9,15 @@
 
 using namespace std;
 
-Loader::Loader(string mainClass) {
-	string exePath(GetCurrentExeName().c_str());
+Loader::Loader(const string mainClass) {
 	this->Loader::Loader(GetCurrentExeName(), mainClass);
 }
 
-Loader::Loader(string jarPath, string mainClass) {
+Loader::Loader(const string jarPath, const string mainClass) {
 	this->jarPath = jarPath;
 	this->mainClassPath = mainClass;
 	this->isInit = false;
+	this->jvm = nullptr;
 }
 
 void Loader::Init() {
@@ -61,7 +61,7 @@ void Loader::Init() {
 	isInit = true;
 }
 
-void Loader::SetPassword(string password) {
+void Loader::SetPassword(const string password) {
 	this->password = password;
 }
 
