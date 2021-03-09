@@ -124,3 +124,34 @@ int main(int argsLength, const char* args[])
     loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
 }
 ```
+
+
+### Usage 7
+
+You need to generate the necessary files with [JJL-Encryptor](https://github.com/AFYaan/JJL-Encryptor)
+
+```cplusplus
+#include "Loader.h"
+#include "LoaderUtils.h"
+
+//AES encrypted data
+const unsigned char rawData[2416] = {
+	0xA5, 0xA0, 0xD6, 0x0F, 0xD0, 0xD4, 0xE4, 0x07, 0x45, 0xFB, 0xB8, 0x35,
+	0x4E, 0x3B, 0x0C, 0xD0, 0xE0, 0x29, 0x0F, 0xDB, 0x56, 0xA0, 0x1E, 0x6F, 
+	0x4E, 0x04, 0x7E, 0xD6, 0x47, 0xE1, 0xD8, 0x59, 0xF3, ...
+};
+
+int main(int argsLength, const char* args[])
+{
+    //Resources file (.jar, .exe, .zip)
+    string resPath = GetExeDir() + string("\\JVM_TEST-resources.jar");
+
+    string mainMethod("pl/afyaan/Main");
+    unique_ptr<Loader> loader(new Loader(resPath, mainMethod));
+    
+    //causes automatic AES decryption 
+    loader->SetPassword("testpassword");
+    
+    loader->RunFromMemory(rawData, sizeof(rawData), args, argsLength);
+}
+```
