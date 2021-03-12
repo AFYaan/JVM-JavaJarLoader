@@ -32,11 +32,6 @@ void Decryptor::Init() {
 
 	this->cipher = env->CallStaticObjectMethod(cipherClass, getInstance, env->NewStringUTF("AES/ECB/PKCS5PADDING"));
 	env->CallVoidMethod(cipher, init, 2, this->secretKey);
-
-	if (cipher == nullptr) {
-		cout << "Error: " << "Main class not found" << endl;
-		exit(EXIT_FAILURE);
-	}
 }
 
 void Decryptor::SetKey(jstring key) {
