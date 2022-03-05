@@ -136,8 +136,6 @@ void Loader::RunFromMemory(const unsigned char data[], int dataSize, const char*
 		unique_ptr<Decryptor> decryptor(new Decryptor(env, password.c_str()));
 		jobject decryptedData = decryptor->Decrypt(CharArrayToJavaByteArray(env, data, dataSize));
 
-		cout << password.c_str() << endl;
-
 		stream = env->NewObject(byteArrayinputStream, byteArrayinputStreamConstructor, decryptedData);
 	}
 	else {
