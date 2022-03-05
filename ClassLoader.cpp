@@ -61,24 +61,46 @@ void ClassLoader::load() {
 	jobject je = NULL;
 	jstring entryName = NULL;
 
+	jstring classNames[64000] = { nullptr };
+	bool definedEntries[64000] = { false };
+
+	int entryCount = 0;
 	while ((je = env->CallObjectMethod(jis, getNextJarEntry)) != NULL) {
 		entryName = (jstring)env->CallObjectMethod(je, getName);
 		jboolean name = env->CallBooleanMethod(env->CallObjectMethod(je, getName), endsWith, env->NewStringUTF(".class"));
 
 		if (name) {
 			jbyteArray classBytes = readClass(jis);
-			jstring cononicalName = (jstring)env->CallObjectMethod(
+			jstring canonicalName = (jstring)env->CallObjectMethod(
 				env->CallObjectMethod(entryName, replaceAll, env->NewStringUTF("/"), env->NewStringUTF(".")), replaceAll,
 				env->NewStringUTF(".class"), env->NewStringUTF(""));
-
-			env->CallObjectMethod(classes, put, cononicalName, classBytes);
-
-			loadClass(cononicalName);
+			classNames[entryCount] = canonicalName;
+			env->CallObjectMethod(classes, put, canonicalName, classBytes);
+			entryCount++;
 		}
 	}
 
 	env->CallVoidMethod(jis, zipInputStreamClose);
 	env->CallVoidMethod(stream, inputStreamClose);
+
+	int defined = 0;
+	while (true) {
+		int loopCount = 0;
+		if (defined >= entryCount) break;
+		while (true) {
+			if (loopCount >= entryCount) break;
+			if (definedEntries[loopCount] != true) {
+				jstring className = classNames[loopCount];
+				jobject load = loadClass(className);
+
+				if (load) {
+					definedEntries[loopCount] = true;
+					defined++;
+				}
+			}
+			loopCount++;
+		}
+	}
 }
 
 jbyteArray ClassLoader::readClass(jobject stream) {
